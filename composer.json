@@ -1,5 +1,5 @@
 {
-    "name": "lostlink/messenger",
+    "name": "lostlink/laravel-messenger",
     "description": "Send Messages to Kinesis",
     "homepage": "https://github.com/lostlink/messenger",
     "authors": [

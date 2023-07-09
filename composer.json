@@ -1,0 +1,46 @@
+{
+    "name": "lostlink/messenger",
+    "description": "Send Messages to Kinesis",
+    "homepage": "https://github.com/lostlink/messenger",
+    "authors": [
+        {
+            "name": "Nuno Souto",
+            "email": "nsouto@lostlink.net"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "aws/aws-sdk-php": "^3.275.5"
+    },
+    "require-dev": {
+        "illuminate/support": "^10.0",
+        "orchestra/testbench": "^8.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lostlink\\Messenger\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lostlink\\Messenger\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lostlink\\Messenger\\MessengerServiceProvider"
+            ],
+            "aliases": {
+                "Messenger": "LostLink\\Messenger\\Facade"
+            }
+        }
+    }
+}

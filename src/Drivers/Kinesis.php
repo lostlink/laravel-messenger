@@ -9,7 +9,7 @@ use Lostlink\Messenger\PendingMessage;
 
 class Kinesis implements Driver
 {
-    public ?string $error = null;
+    public ?string $message = null;
     public bool $status = false;
 
     public function send(PendingMessage $message): Driver
@@ -39,7 +39,7 @@ class Kinesis implements Driver
             $this->status = true;
         } catch (AwsException $e) {
             $this->status = false;
-            $this->error = $e->getMessage();
+            $this->message = $e->getMessage();
         }
 
         return $this;

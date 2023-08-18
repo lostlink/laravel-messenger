@@ -3,6 +3,7 @@
 namespace Lostlink\Messenger;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class PendingMessage
 {
@@ -45,6 +46,10 @@ class PendingMessage
 
     public function __destruct()
     {
-        app(config("laravel-messenger.drivers.{$this->driver}.class"))->send($this);
+        $result = app(config("laravel-messenger.drivers.{$this->driver}.class"))->send($this);
+
+        if ($result->status === false) {
+            Log::error($result->message);
+        }
     }
 }

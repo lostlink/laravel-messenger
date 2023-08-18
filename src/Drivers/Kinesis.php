@@ -20,12 +20,12 @@ class Kinesis implements Driver
         ]);
 
         if ($message->config->get('aws_key') && $message->config->get('aws_secret_key')) {
-            $kinesisConfig->merge([
+            $kinesisConfig = $kinesisConfig->merge([
                 'credentials' => [
-                    'key' => $message->config->get('aws_key') ?? env('AWS_ACCESS_KEY_ID'),
-                    'secret' => $message->config->get('aws_secret_key') ?? env('AWS_SECRET_ACCESS_KEY'),
+                    'key' => $message->config->get('aws_key'),
+                    'secret' => $message->config->get('aws_secret_key') ,
                 ],
-            ])->toArray();
+            ]);
         }
 
         $kinesisClient = new KinesisClient($kinesisConfig->toArray());

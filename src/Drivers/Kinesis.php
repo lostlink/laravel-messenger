@@ -10,6 +10,7 @@ use Lostlink\Messenger\PendingMessage;
 class Kinesis implements Driver
 {
     public ?string $message = null;
+
     public bool $status = false;
 
     public function send(PendingMessage $message): Driver
@@ -23,7 +24,7 @@ class Kinesis implements Driver
             $kinesisConfig = $kinesisConfig->merge([
                 'credentials' => [
                     'key' => $message->config->get('aws_key'),
-                    'secret' => $message->config->get('aws_secret_key') ,
+                    'secret' => $message->config->get('aws_secret_key'),
                 ],
             ]);
         }
@@ -32,7 +33,7 @@ class Kinesis implements Driver
 
         try {
             $kinesisClient->PutRecord([
-                'Data' => $message->body,
+                'Data' => is_array($message->body) ? json_encode($message->body) : $message->body,
                 'StreamName' => $message->stream ?? $message->config->get('name'),
                 'PartitionKey' => $message->partitionKey ?? uniqid(),
             ]);

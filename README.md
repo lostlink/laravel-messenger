@@ -7,12 +7,13 @@
 - **Non-blocking message dispatch**: Messages are processed after the PHP request lifecycle.
 - **Extensible driver system**: Add custom drivers to send messages to services of your choice.
 - **Simple configuration**: Set up different drivers with environment variables.
+- **Rate limiting**: Control the rate at which messages are sent to avoid exceeding service limits.
 
 ### Supported Drivers
 
+- [Log](https://laravel.com/docs/logging/)
 - [Amazon Kinesis](https://aws.amazon.com/kinesis/)
 - [Tinybird](https://www.tinybird.co/)
-- **Log**: Send messages to the Laravel log for debugging or local development.
 
 ## Installation
 
@@ -37,12 +38,17 @@ The package supports multiple drivers, and you can set the default driver using 
 ```php
 return [
 
-    'default' => env('LARAVEL_MESSENGER_DRIVER', 'kinesis'),
+    'default' => env('LARAVEL_MESSENGER_DRIVER', 'log'),
 
     'drivers' => [
 
         'log' => [
             'class' => Lostlink\Messenger\Drivers\Log::class,
+            'rate_limit' => [
+                'enabled' => env('LARAVEL_MESSENGER_LOG_RATE_LIMIT_ENABLED', false),
+                'max_attempts' => env('LARAVEL_MESSENGER_LOG_RATE_LIMIT_MAX_ATTEMPTS', 10),
+                'decay_seconds' => env('LARAVEL_MESSENGER_LOG_RATE_LIMIT_DECAY_SECONDS', 60),
+            ],
         ],
 
         'kinesis' => [
@@ -51,6 +57,11 @@ return [
             'region' => env('LARAVEL_MESSENGER_KINESIS_STREAM_AWS_REGION', env('AWS_DEFAULT_REGION')),
             'aws_key' => env('LARAVEL_MESSENGER_KINESIS_STREAM_AWS_KEY', env('AWS_ACCESS_KEY_ID')),
             'aws_secret_key' => env('LARAVEL_MESSENGER_KINESIS_STREAM_AWS_SECRET_KEY', env('AWS_SECRET_ACCESS_KEY')),
+            'rate_limit' => [
+                'enabled' => env('LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_ENABLED', false),
+                'max_attempts' => env('LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_MAX_ATTEMPTS', 10),
+                'decay_seconds' => env('LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_DECAY_SECONDS', 60),
+            ],
         ],
 
         'tinybird' => [
@@ -58,6 +69,11 @@ return [
             'name' => env('LARAVEL_MESSENGER_TINYBIRD_DATA_SOURCE_NAME'),
             'token' => env('LARAVEL_MESSENGER_TINYBIRD_TOKEN'),
             'endpoint' => env('LARAVEL_MESSENGER_TINYBIRD_ENDPOINT', 'https://api.us-east.aws.tinybird.co/v0/events'),
+            'rate_limit' => [
+                'enabled' => env('LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_ENABLED', false),
+                'max_attempts' => env('LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_MAX_ATTEMPTS', 40), // Free tier limit
+                'decay_seconds' => env('LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_DECAY_SECONDS', 3600), // Free tier limit
+            ],
         ],
 
     ],
@@ -67,16 +83,25 @@ return [
 
 ### Available Environment Variables
 
-| Option | Description |
-|--------|-------------|
-| `LARAVEL_MESSENGER_DRIVER` | Specifies the driver to use (`log`, `kinesis`, or `tinybird`). |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_NAME` | The name of the Kinesis stream. |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_REGION` | The AWS region where the Kinesis stream is located. Defaults to `AWS_DEFAULT_REGION` if not set. |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_KEY` | The AWS access key for Kinesis. Defaults to `AWS_ACCESS_KEY_ID`. |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_SECRET_KEY` | The AWS secret key for Kinesis. Defaults to `AWS_SECRET_ACCESS_KEY`. |
-| `LARAVEL_MESSENGER_TINYBIRD_DATA_SOURCE_NAME` | The name of the Tinybird data source. |
-| `LARAVEL_MESSENGER_TINYBIRD_TOKEN` | The API token for Tinybird. |
-| `LARAVEL_MESSENGER_TINYBIRD_ENDPOINT` | The Tinybird API endpoint. Defaults to `https://api.us-east.aws.tinybird.co/v0/events`. |
+| Option                                                | Description                                                                                      |
+|-------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| `LARAVEL_MESSENGER_DRIVER`                            | Specifies the driver to use (`log`, `kinesis`, or `tinybird`).                                   |
+| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_ENABLED`            | Enable rate limiting for the log driver.                                                         |
+| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_MAX_ATTEMPTS`       | The maximum number of attempts before rate limiting is enforced for the log driver.              |
+| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_DECAY_SECONDS`      | The number of seconds before the rate limit resets for the log driver.                           |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_NAME`               | The name of the Kinesis stream.                                                                  |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_REGION`         | The AWS region where the Kinesis stream is located. Defaults to `AWS_DEFAULT_REGION` if not set. |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_KEY`            | The AWS access key for Kinesis. Defaults to `AWS_ACCESS_KEY_ID`.                                 |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_SECRET_KEY`     | The AWS secret key for Kinesis. Defaults to `AWS_SECRET_ACCESS_KEY`.                             |
+| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_ENABLED`        | Enable rate limiting for the Kinesis driver.                                                     |
+| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_MAX_ATTEMPTS`   | The maximum number of attempts before rate limiting is enforced for the Kinesis driver.          |
+| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_DECAY_SECONDS`  | The number of seconds before the rate limit resets for the Kinesis driver.                       |
+| `LARAVEL_MESSENGER_TINYBIRD_DATA_SOURCE_NAME`         | The name of the Tinybird data source.                                                            |
+| `LARAVEL_MESSENGER_TINYBIRD_TOKEN`                    | The API token for Tinybird.                                                                      |
+| `LARAVEL_MESSENGER_TINYBIRD_ENDPOINT`                 | The Tinybird API endpoint. Defaults to `https://api.us-east.aws.tinybird.co/v0/events`.          |
+| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_ENABLED`       | Enable rate limiting for the Tinybird driver.                                                    |
+| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_MAX_ATTEMPTS`  | The maximum number of attempts before rate limiting is enforced for the Tinybird driver.         |
+| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_DECAY_SECONDS` | The number of seconds before the rate limit resets for the Tinybird driver.                      |
 
 ## Usage
 
@@ -105,7 +130,7 @@ Messenger::send([
 
 ### Updating Configuration on the Fly
 
-You can modify the configuration for a specific message by chaining the `config()` method. This allows you to override the default driver settings for that particular message. Here's an example:
+You can modify the configuration for a specific message by chaining and passing an array to the `config([])` method. This allows you to override the default driver settings for that particular message. Here's an example:
 
 ```php
 use \Lostlink\Messenger\Messenger;
@@ -130,12 +155,73 @@ Messenger::send([
     'name' => 'example_events', // Change the data source name to "example_events" for this message
     'token' => 'your_token', // Change the token for this message
     'endpoint' => 'https://api.us-east.aws.tinybird.co/v0/events', // Change the endpoint for this message
+    'rate_limit' => [
+        'enabled' => true, // Enable rate limiting for this message to use Tinybird Free Tier @ 1000/day
+        'max_attempts' => 40, // Set the maximum number of attempts before rate limiting is enforced
+        'decay_seconds' => 3600, // Set the number of seconds before the rate limit resets
+    ],
 ]);
 ```
 
 ### Adding Custom Drivers
 
-To create and add your own driver, simply extend the driver system by implementing the required interfaces. Follow the documentation for details on how to build custom drivers.
+To create and add your own driver, simply extend the driver system by implementing the required interfaces.
+
+1. Make sure to publish the laravel-messenger config file
+   ```bash
+   php artisan vendor:publish --tag=messenger-config
+   ```
+
+2. Adjust the laravel-messenger config with the name and class of your custom driver
+   ```php
+   
+   return [
+        ...   
+
+       'drivers' => [
+   
+            ...
+
+           'mycustomdriver' => [
+               'class' => \App\Messenger\Drivers\MyCustomDriver::class,
+               'name' => env('MY_CUSTOM_DRIVER_NAME'),
+               'token' => env('MY_CUSTOM_DRIVER_TOKEN'),
+               'endpoint' => env('MY_CUSTOM_DRIVER_ENDPOINT'),
+               'rate_limit' => [
+                   'enabled' => env('MY_CUSTOM_DRIVER_RATE_LIMIT_ENABLED', false),
+                   'max_attempts' => env('MY_CUSTOM_DRIVER_RATE_LIMIT_MAX_ATTEMPTS', 10),
+                   'decay_seconds' => env('MY_CUSTOM_DRIVER_RATE_LIMIT_DECAY_SECONDS', 60),
+               ],
+           ],
+   
+       ],
+   
+       ...
+
+   ];
+   ```
+
+
+3. Create a class that extends \LostLink\Drivers\Driver
+   ````php
+   class MyCustomDriver extends Driver
+   {
+       public function handle(): void
+       {
+           $response = Http::withToken($this->message->token ?? $this->message->config->get('token'))
+               ->acceptJson()
+               ->withQueryParameters([
+                   'name' => $this->message->stream ?? $this->message->config->get('name'),
+               ])
+               ->post(
+                   $this->message->endpoint ?? $this->message->config->get('endpoint'),
+                   $this->message->body
+               );
+   
+           $response->throw();
+       }
+   }
+   ```
 
 ## License
 

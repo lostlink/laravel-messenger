@@ -51,7 +51,7 @@ class PendingMessage
         $result = app($this->config->get('class'))->send($this);
 
         if ($result->status === false) {
-            Log::error($result->message);
+            Log::error($result->errorMessage);
         }
     }
 

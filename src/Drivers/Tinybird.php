@@ -2,46 +2,35 @@
 
 namespace Lostlink\Messenger\Drivers;
 
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Lostlink\Messenger\Contracts\Driver;
 use Lostlink\Messenger\Exceptions\BodyMalFormedException;
 use Lostlink\Messenger\PendingMessage;
 
-class Tinybird implements Driver
+class Tinybird extends Driver
 {
-    public ?string $message = null;
-
-    public bool $status = false;
-
-    public function send(PendingMessage $message): Driver
+    /**
+     * @throws RequestException
+     * @throws BodyMalFormedException
+     * @throws ConnectionException
+     */
+    public function handle(): void
     {
-        try {
-            if (! is_array($message->body)) {
-                throw (new BodyMalFormedException('Body must be an array'));
-            }
-
-            $response = Http::withToken($message->token ?? $message->config->get('token'))
-                ->acceptJson()
-                ->withQueryParameters([
-                    'name' => $message->stream ?? $message->config->get('name'),
-                ])
-                ->post(
-                    $message->endpoint ?? $message->config->get('endpoint'),
-                    $message->body
-                );
-
-            $response->throw();
-
-            $this->status = true;
-
-        } catch (\Exception $e) {
-
-            $this->status = false;
-
-            $this->message = $e->getMessage();
-
+        if (! is_array($this->message->body)) {
+            throw (new BodyMalFormedException('Body must be an array'));
         }
 
-        return $this;
+        $response = Http::withToken($this->message->token ?? $this->message->config->get('token'))
+            ->acceptJson()
+            ->withQueryParameters([
+                'name' => $this->message->stream ?? $this->message->config->get('name'),
+            ])
+            ->post(
+                $this->message->endpoint ?? $this->message->config->get('endpoint'),
+                    $this->message->body
+            );
+
+        $response->throw();
     }
 }

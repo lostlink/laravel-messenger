@@ -83,25 +83,25 @@ return [
 
 ### Available Environment Variables
 
-| Option                                                | Description                                                                                      |
-|-------------------------------------------------------|--------------------------------------------------------------------------------------------------|
-| `LARAVEL_MESSENGER_DRIVER`                            | Specifies the driver to use (`log`, `kinesis`, or `tinybird`).                                   |
-| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_ENABLED`            | Enable rate limiting for the log driver.                                                         |
-| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_MAX_ATTEMPTS`       | The maximum number of attempts before rate limiting is enforced for the log driver.              |
-| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_DECAY_SECONDS`      | The number of seconds before the rate limit resets for the log driver.                           |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_NAME`               | The name of the Kinesis stream.                                                                  |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_REGION`         | The AWS region where the Kinesis stream is located. Defaults to `AWS_DEFAULT_REGION` if not set. |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_KEY`            | The AWS access key for Kinesis. Defaults to `AWS_ACCESS_KEY_ID`.                                 |
-| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_SECRET_KEY`     | The AWS secret key for Kinesis. Defaults to `AWS_SECRET_ACCESS_KEY`.                             |
-| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_ENABLED`        | Enable rate limiting for the Kinesis driver.                                                     |
-| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_MAX_ATTEMPTS`   | The maximum number of attempts before rate limiting is enforced for the Kinesis driver.          |
-| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_DECAY_SECONDS`  | The number of seconds before the rate limit resets for the Kinesis driver.                       |
-| `LARAVEL_MESSENGER_TINYBIRD_DATA_SOURCE_NAME`         | The name of the Tinybird data source.                                                            |
-| `LARAVEL_MESSENGER_TINYBIRD_TOKEN`                    | The API token for Tinybird.                                                                      |
-| `LARAVEL_MESSENGER_TINYBIRD_ENDPOINT`                 | The Tinybird API endpoint. Defaults to `https://api.us-east.aws.tinybird.co/v0/events`.          |
-| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_ENABLED`       | Enable rate limiting for the Tinybird driver.                                                    |
-| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_MAX_ATTEMPTS`  | The maximum number of attempts before rate limiting is enforced for the Tinybird driver.         |
-| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_DECAY_SECONDS` | The number of seconds before the rate limit resets for the Tinybird driver.                      |
+| Option                                                | Description                                                                                                                        |
+|-------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `LARAVEL_MESSENGER_DRIVER`                            | Specifies the driver to use (`log`, `kinesis`, or `tinybird`).                                                                     |
+| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_ENABLED`            | Enable rate limiting for the log driver.                                                                                           |
+| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_MAX_ATTEMPTS`       | The maximum number of attempts before rate limiting is enforced for the Log driver. A value of 0 is the same a being disabled      |
+| `LARAVEL_MESSENGER_LOG_RATE_LIMIT_DECAY_SECONDS`      | The number of seconds before the rate limit resets for the log driver.                                                             |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_NAME`               | The name of the Kinesis stream.                                                                                                    |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_REGION`         | The AWS region where the Kinesis stream is located. Defaults to `AWS_DEFAULT_REGION` if not set.                                   |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_KEY`            | The AWS access key for Kinesis. Defaults to `AWS_ACCESS_KEY_ID`.                                                                   |
+| `LARAVEL_MESSENGER_KINESIS_STREAM_AWS_SECRET_KEY`     | The AWS secret key for Kinesis. Defaults to `AWS_SECRET_ACCESS_KEY`.                                                               |
+| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_ENABLED`        | Enable rate limiting for the Kinesis driver.                                                                                       |
+| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_MAX_ATTEMPTS`   | The maximum number of attempts before rate limiting is enforced for the Kinesis driver. A value of 0 is the same a being disabled  |
+| `LARAVEL_MESSENGER_KINESIS_RATE_LIMIT_DECAY_SECONDS`  | The number of seconds before the rate limit resets for the Kinesis driver.                                                         |
+| `LARAVEL_MESSENGER_TINYBIRD_DATA_SOURCE_NAME`         | The name of the Tinybird data source.                                                                                              |
+| `LARAVEL_MESSENGER_TINYBIRD_TOKEN`                    | The API token for Tinybird.                                                                                                        |
+| `LARAVEL_MESSENGER_TINYBIRD_ENDPOINT`                 | The Tinybird API endpoint. Defaults to `https://api.us-east.aws.tinybird.co/v0/events`.                                            |
+| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_ENABLED`       | Enable rate limiting for the Tinybird driver.                                                                                      |
+| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_MAX_ATTEMPTS`  | The maximum number of attempts before rate limiting is enforced for the Tinybird driver. A value of 0 is the same a being disabled |
+| `LARAVEL_MESSENGER_TINYBIRD_RATE_LIMIT_DECAY_SECONDS` | The number of seconds before the rate limit resets for the Tinybird driver.                                                        |
 
 ## Usage
 

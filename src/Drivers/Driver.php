@@ -21,7 +21,7 @@ class Driver implements DriverContract
         $this->message = $message;
 
         try {
-            if (Arr::get($this->message->config, 'rate_limit.enabled')) {
+            if (Arr::get($this->message->config, 'rate_limit.enabled') && Arr::get($this->message->config, 'rate_limit.max_attempts') != 0) {
                 $executed = RateLimiter::attempt(
                     key: "laravel_messenger-{$this->message->driver}-rate_limit",
                     maxAttempts: Arr::get($this->message->config, 'rate_limit.max_attempts'),

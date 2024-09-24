@@ -6,7 +6,6 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Lostlink\Messenger\Exceptions\BodyMalFormedException;
-use Lostlink\Messenger\PendingMessage;
 
 class Tinybird extends Driver
 {
@@ -28,7 +27,7 @@ class Tinybird extends Driver
             ])
             ->post(
                 $this->message->endpoint ?? $this->message->config->get('endpoint'),
-                    $this->message->body
+                $this->message->body
             );
 
         $response->throw();

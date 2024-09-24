@@ -3,7 +3,6 @@
 namespace Lostlink\Messenger\Drivers;
 
 use Aws\Kinesis\KinesisClient;
-use Lostlink\Messenger\PendingMessage;
 
 class Kinesis extends Driver
 {

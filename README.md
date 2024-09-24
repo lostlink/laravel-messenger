@@ -150,8 +150,9 @@ Messenger::send([
    "meal_choice" => "vegetarian", 
    "seat_number" => "15D", 
    "airline" => "Red Balloon" 
-])->config([
-    'driver' => 'tinybird', // Change the driver to "tinybird" for this message
+])
+->driver('tinybird') // Change the driver to "tinybird" for this message
+->config([
     'name' => 'example_events', // Change the data source name to "example_events" for this message
     'token' => 'your_token', // Change the token for this message
     'endpoint' => 'https://api.us-east.aws.tinybird.co/v0/events', // Change the endpoint for this message

@@ -20,6 +20,15 @@ class Driver implements DriverContract
     {
         $this->message = $message;
 
+        if($this->message->config->get('enabled') === false) {
+
+            $this->status = false;
+
+            $this->errorMessage = "Laravel Messenger {$this->message->driver} driver is disabled";
+
+            return $this;
+        }
+
         try {
             if (Arr::get($this->message->config, 'rate_limit.enabled') && Arr::get($this->message->config, 'rate_limit.max_attempts') != 0) {
                 $executed = RateLimiter::attempt(

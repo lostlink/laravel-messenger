@@ -6,6 +6,7 @@ return [
     'drivers' => [
 
         'log' => [
+            'enabled' => env('LARAVEL_MESSENGER_LOG_ENABLED', true),
             'class' => Lostlink\Messenger\Drivers\Log::class,
             'rate_limit' => [
                 'enabled' => env('LARAVEL_MESSENGER_LOG_RATE_LIMIT_ENABLED', false),
@@ -15,6 +16,7 @@ return [
         ],
 
         'kinesis' => [
+            'enabled' => env('LARAVEL_MESSENGER_KINESIS_ENABLED', false),
             'class' => Lostlink\Messenger\Drivers\Kinesis::class,
             'name' => env('LARAVEL_MESSENGER_KINESIS_STREAM_NAME'),
             'region' => env('LARAVEL_MESSENGER_KINESIS_STREAM_AWS_REGION', env('AWS_DEFAULT_REGION')),
@@ -28,6 +30,7 @@ return [
         ],
 
         'tinybird' => [
+            'enabled' => env('LARAVEL_MESSENGER_TINYBIRD_ENABLED', false),
             'class' => Lostlink\Messenger\Drivers\Tinybird::class,
             'name' => env('LARAVEL_MESSENGER_TINYBIRD_DATA_SOURCE_NAME'),
             'token' => env('LARAVEL_MESSENGER_TINYBIRD_TOKEN'),

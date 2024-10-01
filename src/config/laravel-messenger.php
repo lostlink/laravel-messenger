@@ -15,6 +15,19 @@ return [
             ],
         ],
 
+        'socket' => [
+            'enabled' => env('LARAVEL_MESSENGER_SOCKET_ENABLED', false),
+            'class' => Lostlink\Messenger\Drivers\Socket::class,
+            'host' => env('LARAVEL_MESSENGER_SOCKET_HOST'),
+            'port' => env('LARAVEL_MESSENGER_SOCKET_PORT'),
+            'rate_limit' => [
+                'enabled' => env('LARAVEL_MESSENGER_SOCKET_RATE_LIMIT_ENABLED', false),
+                'max_attempts' => env('LARAVEL_MESSENGER_SOCKET_RATE_LIMIT_MAX_ATTEMPTS', 10),
+                'decay_seconds' => env('LARAVEL_MESSENGER_SOCKET_RATE_LIMIT_DECAY_SECONDS', 60),
+            ],
+        ],
+
+
         'kinesis' => [
             'enabled' => env('LARAVEL_MESSENGER_KINESIS_ENABLED', false),
             'class' => Lostlink\Messenger\Drivers\Kinesis::class,

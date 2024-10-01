@@ -20,7 +20,7 @@ class Driver implements DriverContract
     {
         $this->message = $message;
 
-        if($this->message->config->get('enabled') === false) {
+        if ($this->message->config->get('enabled') === false) {
 
             $this->status = false;
 

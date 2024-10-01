@@ -27,7 +27,6 @@ return [
             ],
         ],
 
-
         'kinesis' => [
             'enabled' => env('LARAVEL_MESSENGER_KINESIS_ENABLED', false),
             'class' => Lostlink\Messenger\Drivers\Kinesis::class,

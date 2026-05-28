@@ -8,6 +8,7 @@ final class Message
 
     public string $driver;
 
+    /** Driver-specific metadata: routing keys, auth overrides, stream names, etc. */
     public array $attributes;
 
     public function __construct(array|string $body, string $driver, array $attributes = [])

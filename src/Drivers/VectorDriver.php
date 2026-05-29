@@ -22,21 +22,25 @@ final class VectorDriver implements Driver, HasPersistentConnection
         $protocol = $config['protocol'] ?? 'tcp';
 
         if ($protocol === 'udp') {
+            if (strlen($payload) > 65000) {
+                throw new TransportException(
+                    "Vector UDP payload exceeds datagram cap (~65KB); switch to 'tcp' protocol or shrink the payload (current: ".strlen($payload).' bytes)'
+                );
+            }
+
             $sock = stream_socket_client("udp://{$host}:{$port}", $errno, $errstr, $timeout);
 
             if ($sock === false) {
                 throw new TransportException("Failed to connect to Vector (udp): {$errstr} ({$errno})");
             }
 
-            if (strlen($payload) > 65000) {
+            try {
+                if (fwrite($sock, $payload) === false) {
+                    throw new TransportException('Vector UDP write failed');
+                }
+            } finally {
                 fclose($sock);
-                throw new TransportException(
-                    "Vector UDP payload exceeds datagram cap (~65KB); switch to 'tcp' protocol or shrink the payload (current: " . strlen($payload) . " bytes)"
-                );
             }
-
-            fwrite($sock, $payload);
-            fclose($sock);
 
             return;
         }
@@ -52,7 +56,9 @@ final class VectorDriver implements Driver, HasPersistentConnection
             stream_set_timeout($sock, $timeout);
 
             try {
-                fwrite($sock, $payload);
+                if (fwrite($sock, $payload) === false) {
+                    throw new TransportException('Vector TCP write failed');
+                }
             } finally {
                 fclose($sock);
             }
@@ -72,7 +78,11 @@ final class VectorDriver implements Driver, HasPersistentConnection
         }
 
         stream_set_timeout($this->socket, $timeout);
-        fwrite($this->socket, $payload);
+
+        if (fwrite($this->socket, $payload) === false) {
+            $this->socket = null;
+            throw new TransportException('Vector TCP persistent write failed; connection reset');
+        }
     }
 
     public function close(): void

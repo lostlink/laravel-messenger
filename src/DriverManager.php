@@ -39,6 +39,10 @@ class DriverManager
             throw new DriverClassNotFoundException("Class for driver \"{$name}\" not found");
         }
 
+        if (! is_a($config['class'], Driver::class, true)) {
+            throw new DriverClassNotFoundException("Class for driver \"{$name}\" must implement ".Driver::class);
+        }
+
         return $this->resolved[$name] = app($config['class']);
     }
 
@@ -52,7 +56,11 @@ class DriverManager
     {
         foreach ($this->resolved as $driver) {
             if ($driver instanceof HasPersistentConnection) {
-                $driver->close();
+                try {
+                    $driver->close();
+                } catch (\Throwable $e) {
+                    logger()->error('[Messenger] Failed to close driver '.get_class($driver).': '.$e->getMessage());
+                }
             }
         }
     }

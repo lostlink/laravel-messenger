@@ -8,4 +8,9 @@ class Messenger
     {
         return new PendingMessage(...func_get_args());
     }
+
+    public static function extend(string $name, \Closure $factory): void
+    {
+        app(\Lostlink\Messenger\DriverManager::class)->extend($name, $factory);
+    }
 }

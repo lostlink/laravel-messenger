@@ -25,6 +25,8 @@ final class SocketDriver implements Driver
             throw new TransportException("Failed to connect to Socket: {$errstr} ({$errno})");
         }
 
+        stream_set_timeout($socket, $config['timeout'] ?? 30);
+
         try {
             fwrite($socket, $normalized."\n");
         } finally {

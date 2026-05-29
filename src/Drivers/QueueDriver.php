@@ -20,11 +20,11 @@ final class QueueDriver implements Driver
         $job = SendMessageJob::dispatch($targetMessage);
 
         if (!empty($config['connection'])) {
-            $job->onConnection($config['connection']);
+            $job = $job->onConnection($config['connection']);
         }
 
         if (!empty($config['queue'])) {
-            $job->onQueue($config['queue']);
+            $job = $job->onQueue($config['queue']);
         }
 
         if (!empty($config['delay'])) {

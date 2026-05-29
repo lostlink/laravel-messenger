@@ -20,6 +20,6 @@ class ApplyEnvelope
             $attributes['_sent_at'] = now()->toIso8601String();
         }
 
-        return new Message($message->body, $message->driver, $attributes);
+        return new Message($message->body, $message->driver, $attributes, $message->configOverrides);
     }
 }

@@ -54,6 +54,22 @@ class QueueDriverTest extends TestCase
         });
     }
 
+    public function test_queue_driver_respects_connection_queue_and_delay(): void
+    {
+        Queue::fake();
+
+        config([
+            'laravel-messenger.drivers.queue.connection' => 'redis',
+            'laravel-messenger.drivers.queue.queue'      => 'high',
+            'laravel-messenger.drivers.queue.delay'      => 10,
+        ]);
+
+        $message = new Message('queued message', 'queue');
+        app(DispatchMessage::class)($message);
+
+        Queue::assertPushedOn('high', SendMessageJob::class);
+    }
+
     public function test_send_message_job_handle_calls_driver_send(): void
     {
         // Track whether send() was called on our spy driver

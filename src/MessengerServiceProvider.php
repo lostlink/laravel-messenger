@@ -10,12 +10,6 @@ class MessengerServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //        Collection::make(glob(__DIR__.'Drivers/*.php'))
-        //            ->mapWithKeys(static fn ($path) => [$path => pathinfo($path, PATHINFO_FILENAME)])
-        //            ->each(static function ($driver) {
-        //                $this->app->alias('Lostlink\\Messenger\\Drivers\\'.$driver, $driver);
-        //            });
-
         $this->mergeConfigFrom(
             __DIR__.'/config/laravel-messenger.php', 'laravel-messenger'
         );

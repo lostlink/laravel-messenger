@@ -10,20 +10,16 @@ class MessengerServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //        Collection::make(glob(__DIR__.'Drivers/*.php'))
-        //            ->mapWithKeys(static fn ($path) => [$path => pathinfo($path, PATHINFO_FILENAME)])
-        //            ->each(static function ($driver) {
-        //                $this->app->alias('Lostlink\\Messenger\\Drivers\\'.$driver, $driver);
-        //            });
-
         $this->mergeConfigFrom(
             __DIR__.'/config/laravel-messenger.php', 'laravel-messenger'
         );
+
+        $this->app->singleton(\Lostlink\Messenger\DriverManager::class);
     }
 
     public function boot(): void
     {
-        Collection::make(glob(__DIR__.'Macros/Collection/*.php'))
+        Collection::make(glob(__DIR__.'/Macros/Collection/*.php'))
             ->mapWithKeys(static fn ($path) => [$path => pathinfo($path, PATHINFO_FILENAME)])
             ->reject(static fn ($macro) => Collection::hasMacro($macro))
             ->each(static function ($macro) {
@@ -31,9 +27,12 @@ class MessengerServiceProvider extends ServiceProvider
                 Collection::macro(Str::camel($macro), app($class)());
             });
 
+        $this->app->terminating(function () {
+            $this->app->make(\Lostlink\Messenger\DriverManager::class)->closeAll();
+        });
+
         $this->publishes([
             __DIR__.'/config/laravel-messenger.php' => config_path('laravel-messenger.php'),
-        ]);
-
+        ], ['laravel-messenger-config', 'messenger-config']);
     }
 }

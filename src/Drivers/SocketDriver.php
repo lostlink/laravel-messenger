@@ -25,7 +25,10 @@ final class SocketDriver implements Driver
             throw new TransportException("Failed to connect to Socket: {$errstr} ({$errno})");
         }
 
-        fwrite($socket, $normalized . "\n");
-        fclose($socket);
+        try {
+            fwrite($socket, $normalized."\n");
+        } finally {
+            fclose($socket);
+        }
     }
 }

@@ -47,7 +47,7 @@ class DriverManagerTest extends TestCase
     {
         $custom = new LogDriver();
 
-        $this->manager->extend('testlog', fn ($app) => $custom);
+        $this->manager->extend('testlog', fn () => $custom);
 
         $result = $this->manager->resolve('testlog');
 
@@ -60,7 +60,7 @@ class DriverManagerTest extends TestCase
         $this->manager->resolve('testlog');
 
         $custom = new LogDriver();
-        $this->manager->extend('testlog', fn ($app) => $custom);
+        $this->manager->extend('testlog', fn () => $custom);
 
         $result = $this->manager->resolve('testlog');
 
@@ -96,24 +96,25 @@ class DriverManagerTest extends TestCase
 
     public function test_close_all_calls_close_on_persistent_drivers(): void
     {
-        $closed = false;
+        $tracker = new \stdClass();
+        $tracker->closed = false;
 
-        $fakeDriver = new class ($closed) implements Driver, HasPersistentConnection {
-            public function __construct(private bool &$closed) {}
+        $fakeDriver = new class ($tracker) implements Driver, HasPersistentConnection {
+            public function __construct(private \stdClass $tracker) {}
 
             public function send(Message $message, array $config): void {}
 
             public function close(): void
             {
-                $this->closed = true;
+                $this->tracker->closed = true;
             }
         };
 
-        $this->manager->extend('testlog', fn ($app) => $fakeDriver);
+        $this->manager->extend('testlog', fn () => $fakeDriver);
         $this->manager->resolve('testlog');
 
         $this->manager->closeAll();
 
-        $this->assertTrue($closed, 'close() was not called on persistent driver');
+        $this->assertTrue($tracker->closed, 'close() was not called on persistent driver');
     }
 }

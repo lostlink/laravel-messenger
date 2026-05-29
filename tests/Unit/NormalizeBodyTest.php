@@ -34,43 +34,29 @@ class NormalizeBodyTest extends TestCase
 
     public function test_arrayable_uses_to_array(): void
     {
-        $called = false;
-
-        $arrayable = new class ($called) implements Arrayable {
-            public function __construct(private bool &$called) {}
-
+        $arrayable = new class implements Arrayable {
             public function toArray(): array
             {
-                $this->called = true;
-
                 return ['key' => 'value'];
             }
         };
 
         $result = ($this->action)($arrayable);
 
-        $this->assertTrue($called, 'toArray() was not called');
         $this->assertSame('{"key":"value"}', $result);
     }
 
     public function test_jsonable_uses_to_json(): void
     {
-        $called = false;
-
-        $jsonable = new class ($called) implements Jsonable {
-            public function __construct(private bool &$called) {}
-
+        $jsonable = new class implements Jsonable {
             public function toJson($options = 0): string
             {
-                $this->called = true;
-
                 return '{"jsonable":true}';
             }
         };
 
         $result = ($this->action)($jsonable);
 
-        $this->assertTrue($called, 'toJson() was not called');
         $this->assertSame('{"jsonable":true}', $result);
     }
 

@@ -6,10 +6,7 @@ use Lostlink\Messenger\Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    public function test_that_true_is_true(): void
+    public function test_suite_is_wired_up(): void
     {
         $this->assertTrue(true);
     }

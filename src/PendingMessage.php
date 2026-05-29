@@ -54,7 +54,7 @@ class PendingMessage
 
     public function toMessage(): Message
     {
-        return new Message($this->body, $this->driverName, $this->attributes);
+        return new Message($this->body, $this->driverName, $this->attributes, $this->configOverrides);
     }
 
     public function __destruct()

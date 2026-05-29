@@ -15,7 +15,10 @@ class DispatchMessage
 {
     public function __invoke(Message $message): DispatchResult
     {
-        $driverConfig = config("laravel-messenger.drivers.{$message->driver}", []);
+        $driverConfig = array_merge(
+            config("laravel-messenger.drivers.{$message->driver}", []),
+            $message->configOverrides
+        );
 
         if (Arr::get($driverConfig, 'enabled') === false) {
             return new DispatchResult(false, "Laravel Messenger {$message->driver} driver is disabled", $message->driver, 0);

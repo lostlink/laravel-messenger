@@ -101,6 +101,10 @@ return [
                 'max_attempts' => (int) env('LARAVEL_MESSENGER_QUEUE_RATE_LIMIT_MAX_ATTEMPTS', 10),
                 'decay_seconds' => (int) env('LARAVEL_MESSENGER_QUEUE_RATE_LIMIT_DECAY_SECONDS', 60),
             ],
+            'envelope' => [
+                'uuid' => env('LARAVEL_MESSENGER_QUEUE_ENVELOPE_UUID', false),
+                'timestamp' => env('LARAVEL_MESSENGER_QUEUE_ENVELOPE_TIMESTAMP', false),
+            ],
         ],
 
     ],

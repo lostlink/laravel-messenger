@@ -10,7 +10,7 @@ use Illuminate\Queue\SerializesModels;
 use Lostlink\Messenger\Actions\DispatchMessage;
 use Lostlink\Messenger\Message;
 
-class SendMessageJob implements ShouldQueue
+final class SendMessageJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
